@@ -100,10 +100,15 @@ void adc_init(void)
 	ADC_SoftwareStartConv(ADC1);
 }
 
+// zmena frekvencie blikania pomocou AD prevodnika
+void blikaj(uint16_t prevod){
+	// zmena stavu LED na pine 5
+	GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
+	for(int i = 0; i < 100*prevod; i++);
+}
+
 int main(void)
 {
-  uint16_t AD_value = 0;
-
   /**
   *  IMPORTANT NOTE!
   *  See the <system_*.c> file and how/if the SystemInit() function updates 
@@ -135,7 +140,8 @@ int main(void)
 	  // pockame kym skonci prevod
 	  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC)){}
 	  // nacitame si hodnotu z prevodnika
-	  AD_value = ADC_GetConversionValue(ADC1);
+	  blikaj(ADC_GetConversionValue(ADC1));
+
   }
   return 0;
 }
